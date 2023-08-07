@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FaSearch } from 'react-icons/fa';
 import { AiFillCaretDown } from 'react-icons/ai';
@@ -8,8 +8,14 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 import Logo from '../assets/Logo.png';
 import Button from './Button';
 import { firebaseAuth } from '../utils/firebase.config';
+import { useDispatch, useSelector } from 'react-redux';
+import { searchMovies } from '../store';
+import SearchedMovies from './SearchedMovies';
 
 export default function Navbar({ isScroll }) {
+  const dispatch = useDispatch();
+  const serchedMovies = useSelector((state) => state.netflix.searchedMovies);
+
   const links = [
     { name: 'Home', link: '/' },
     { name: 'TV Shows', link: '/tv' },
@@ -20,6 +26,8 @@ export default function Navbar({ isScroll }) {
   const [showSearch, setShowSearch] = useState(false);
   const [inputHover, setInputHover] = useState(false);
   const [showHamburgerMenu, setShowHamburgerMenu] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
 
   const navigate = useNavigate();
 
@@ -41,71 +49,100 @@ export default function Navbar({ isScroll }) {
     }
   });
 
+  const searchEnterHandler = (e) => {
+    if (e.key === 'Enter') {
+      dispatch(searchMovies({ term: searchTerm }));
+      setIsSearching(true);
+      document.body.style.overflow = 'hidden';
+    }
+  };
+
+  const closeSearchHandler = (e) => {
+    e.stopPropagation();
+    if (e.target === e.currentTarget) {
+      setIsSearching(false);
+    }
+  };
+
   return (
-    <Container>
-      <nav className={`flex ${isScroll ? 'scrolled' : ''}`}>
-        <div className="left flex a-center">
-          <div
-            className="logo flex a-center j-center"
-            onClick={() => navigate('/')}>
-            <img src={Logo} alt="" />
+    <Fragment>
+      <NavContainer>
+        <nav className={`flex ${isScroll ? 'scrolled' : ''}`}>
+          <div className="left flex a-center">
+            <div
+              className="logo flex a-center j-center"
+              onClick={() => navigate('/')}>
+              <img src={Logo} alt="" />
+            </div>
+            <div
+              className="browse-menu flex j-center a-center"
+              onClick={() => setShowHamburgerMenu(!showHamburgerMenu)}>
+              Browse
+              <AiFillCaretDown
+                style={{
+                  transform: showHamburgerMenu ? 'rotate(180deg)' : 'rotate(0)',
+                }}
+              />
+            </div>
+            <ul
+              className="links"
+              style={{ display: showHamburgerMenu ? 'flex' : 'none' }}
+              active={showHamburgerMenu ? 'flex;' : 'none;'}>
+              {links.map(({ name, link }) => {
+                return (
+                  <li key={name}>
+                    <Link to={link}>{name}</Link>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
-          <div
-            className="browse-menu flex j-center a-center"
-            onClick={() => setShowHamburgerMenu(!showHamburgerMenu)}>
-            Browse
-            <AiFillCaretDown
-              style={{
-                transform: showHamburgerMenu ? 'rotate(180deg)' : 'rotate(0)',
-              }}
-            />
+          <div className="right flex a-center">
+            <div className={`search ${showSearch && 'show-search'}`}>
+              <button
+                onFocus={() => setShowSearch(true)}
+                onBlur={() => !inputHover && setShowSearch(false)}>
+                <FaSearch />
+              </button>
+              <input
+                type="text"
+                placeholder="Search..."
+                onMouseEnter={() => setInputHover(true)}
+                onMouseLeave={() => setInputHover(false)}
+                onBlur={() => {
+                  setShowSearch(false);
+                  setInputHover(false);
+                }}
+                onChange={(e) =>
+                  setSearchTerm(
+                    e.target.value.toLowerCase().replaceAll(' ', '+')
+                  )
+                }
+                onKeyDown={searchEnterHandler}
+              />
+            </div>
+            <Button onClick={handleLogout}>Logout</Button>
           </div>
-          <ul
-            className="links"
-            style={{ display: showHamburgerMenu ? 'flex' : 'none' }}
-            active={showHamburgerMenu ? 'flex;' : 'none;'}>
-            {links.map(({ name, link }) => {
-              return (
-                <li key={name}>
-                  <Link to={link}>{name}</Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-        <div className="right flex a-center">
-          <div className={`search ${showSearch && 'show-search'}`}>
-            <button
-              onFocus={() => setShowSearch(true)}
-              onBlur={() => !inputHover && setShowSearch(false)}>
-              <FaSearch />
-            </button>
-            <input
-              type="text"
-              placeholder="Search..."
-              onMouseEnter={() => setInputHover(true)}
-              onMouseLeave={() => setInputHover(false)}
-              onBlur={() => {
-                setShowSearch(false);
-                setInputHover(false);
-              }}
-            />
-          </div>
-          <Button onClick={handleLogout}>Logout</Button>
-        </div>
-      </nav>
-    </Container>
+        </nav>
+      </NavContainer>
+      {isSearching && (
+        <SearchedMovies
+          movies={serchedMovies.movies}
+          closeSearchHandler={closeSearchHandler}
+        />
+      )}
+    </Fragment>
   );
 }
 
-const Container = styled.div`
+const NavContainer = styled.div`
   .scrolled {
     background-color: #141414;
   }
   position: fixed;
   top: 0;
   font-size: 1rem;
-  z-index: 1000;
+  z-index: 1002;
   width: 100%;
   height: 5rem;
   display: flex;

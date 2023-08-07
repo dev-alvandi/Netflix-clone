@@ -11,6 +11,9 @@ import { BiChevronDown } from 'react-icons/bi';
 import video from '../assets/dummyTrailer.mp4';
 import { firebaseAuth } from '../utils/firebase.config';
 import { onAuthStateChanged } from 'firebase/auth';
+import { SERVER_URL } from '../utils/constants';
+import { useDispatch } from 'react-redux';
+import { removeFromLikedMovies } from '../store';
 
 export default React.memo(function Card({
   movieData,
@@ -18,8 +21,9 @@ export default React.memo(function Card({
   isLiked = false,
   extraClass,
 }) {
-  const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [email, setEmail] = useState(undefined);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -30,13 +34,14 @@ export default React.memo(function Card({
     navigate('/login');
   });
 
-  const RemoveFromList = () => {
-    try {
-      axios.post(`${SERVER_URL}/api/user/remove`, { email, data: movieData });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // console.log(movieData);
+  // const RemoveFromList = () => {
+  //   try {
+  //     axios.post(`${SERVER_URL}/api/user/remove`, { email, data: movieData });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const addToList = () => {
     try {
@@ -84,9 +89,19 @@ export default React.memo(function Card({
                 <RiThumbUpFill title="Like" />
                 <RiThumbDownFill title="Dislike" />
                 {isLiked ? (
-                  <BsCheck title="Remove from List" onClick={RemoveFromList} />
+                  <BsCheck
+                    title="Remove from List"
+                    onClick={() =>
+                      dispatch(
+                        removeFromLikedMovies({ email, movieId: movieData.id })
+                      )
+                    }
+                  />
                 ) : (
-                  <AiOutlinePlus title="Add to my list" onClick={addToList} />
+                  <AiOutlinePlus
+                    title="Add to my list"
+                    onClick={() => addToList(movieData)}
+                  />
                 )}
               </div>
               <div className="info">
@@ -146,6 +161,7 @@ const Container = styled.div`
         height: 100%;
         object-fit: cover;
         border-radius: 0.3rem;
+        transition: 0.5s ease-in-out;
       }
       img {
         z-index: 4;
@@ -153,7 +169,6 @@ const Container = styled.div`
       video {
         opacity: 0;
         visibility: hidden;
-        transition: 0.5s ease-in-out;
         z-index: 5;
       }
     }
@@ -172,7 +187,7 @@ const Container = styled.div`
           gap: 1rem;
         }
         svg {
-          font-size: 2rem;
+          font-size: 1.8rem;
           cursor: pointer;
           transition: 0.3s ease-in-out;
           &:hover {
@@ -187,7 +202,7 @@ const Container = styled.div`
           /* border: 1px solid #fff; */
           li {
             /* border: 1px solid #fff; */
-            font-size: 1rem;
+            font-size: 0.9rem;
             list-style-type: none;
             display: flex;
             align-items: center;
@@ -209,6 +224,10 @@ const Container = styled.div`
       }
     }
     &:hover {
+      img {
+        opacity: 0;
+        visibility: hidden;
+      }
       video {
         opacity: 1;
         visibility: visible;

@@ -22,13 +22,13 @@ export default function TVShows() {
 
   useEffect(() => {
     dispatch(getGenres());
-  }, []);
+  });
 
   useEffect(() => {
     if (genresLoaded) {
       dispatch(fetchMovies({ type: 'tv' }));
     }
-  }, [genresLoaded]);
+  }, [genresLoaded, dispatch]);
 
   window.onscroll = () => {
     setIsScroll(window.pageYOffset === 0 ? false : true);

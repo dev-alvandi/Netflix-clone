@@ -13,8 +13,11 @@ export default function MyList() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [isScroll, setIsScroll] = useState(false);
   const likedMovies = useSelector((state) => state.netflix.likedMovies);
+  const likedMoviesCount = useSelector(
+    (state) => state.netflix.likedMoviesCount
+  );
+  const [isScroll, setIsScroll] = useState(false);
   const [email, setEmail] = useState(undefined);
 
   onAuthStateChanged(firebaseAuth, (currUser) => {
@@ -24,13 +27,11 @@ export default function MyList() {
     navigate('/login');
   });
 
-  console.log(likedMovies);
-
   useEffect(() => {
     if (email) {
       dispatch(getUserLikedMovies(email));
     }
-  }, [email, likedMovies]);
+  }, [email, likedMoviesCount]);
 
   window.onscroll = () => {
     setIsScroll(window.pageYOffset === 0 ? false : true);
@@ -42,6 +43,7 @@ export default function MyList() {
       // navigate('/movies');
     }
   });
+
   return (
     <Container>
       <div className="navbar">

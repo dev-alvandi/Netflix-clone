@@ -3,14 +3,27 @@ import styled from 'styled-components';
 import { GrNext, GrPrevious } from 'react-icons/gr';
 
 import Card from './Card';
+import { useDispatch, useSelector } from 'react-redux';
+import LoadingMovies from './LoadingMovies';
 
 export default React.memo(function CardSlider({ data, title }) {
   const listRef = useRef();
+
+  const dispatch = useDispatch();
+  const genresLoaded = useSelector((state) => state.netflix.moviesLoaded);
 
   // const [visibleItemsIndexes, setVisibleItemsIndexes] = useState([]);
   // const [sliderChildWidthVal, setSliderChildWidthVal] = useState(0);
   const [sliderWidthVal, setSliderWidthVal] = useState(0);
   const [sliderValue, setSliderValue] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hideArrow, setHideArrow] = useState('');
+
+  useEffect(() => {
+    if (genresLoaded) {
+      setIsLoaded(true);
+    }
+  }, [genresLoaded]);
 
   useEffect(() => {
     if (listRef.current) {
@@ -21,7 +34,7 @@ export default React.memo(function CardSlider({ data, title }) {
     // }
   }, []);
 
-  // ! Fixing the horizontal scroll logic!
+  // ! Fixing the horizontal scrolling logic!
   // useEffect(() => {
   //   const itemPerScreen = Math.floor(sliderWidthVal / sliderChildWidthVal);
   //   const visibleItems = [];
@@ -36,11 +49,13 @@ export default React.memo(function CardSlider({ data, title }) {
     const itemCount = data.length;
     const childWidth = listRef.current.children[0].clientWidth;
     const itemPerScreen = Math.floor(sliderWidthVal / childWidth);
-    const allowedShift = itemCount / itemPerScreen;
+    const allowedShift = itemCount - itemPerScreen;
+
+    console.log(itemCount, childWidth, itemCount, allowedShift, sliderValue);
 
     if (direction === 'left' && sliderValue > 0) {
       listRef.current.style.setProperty('--slider-index', sliderValue - 1);
-    } else if (direction === 'right' && sliderValue + 1 < allowedShift) {
+    } else if (direction === 'right' && sliderValue < Math.ceil(allowedShift)) {
       listRef.current.style.setProperty('--slider-index', sliderValue + 1);
     }
     setSliderValue(
@@ -67,7 +82,7 @@ export default React.memo(function CardSlider({ data, title }) {
         <button
           className="handle left-handle"
           onClick={() => handleDirection('left')}>
-          <GrPrevious />
+          {hideArrow !== 'left' && <GrPrevious />}
         </button>
         <div className="flex slider" ref={listRef}>
           {data.map((movie, index) => {
@@ -86,7 +101,7 @@ export default React.memo(function CardSlider({ data, title }) {
         <button
           className="handle right-handle"
           onClick={() => handleDirection('right')}>
-          <GrNext />
+          {hideArrow !== 'right' && <GrNext />}
         </button>
       </div>
     </Container>
@@ -94,6 +109,7 @@ export default React.memo(function CardSlider({ data, title }) {
 });
 
 const Container = styled.div`
+  --moving-factor: -25%;
   position: relative;
   padding: 2rem 0;
   .none {
@@ -126,16 +142,16 @@ const Container = styled.div`
   }
   .wrapper {
     .slider {
-      --slider-index: 0;
+      --slider-index: -25%;
       width: 95%;
       transition: 0.6s ease-in-out;
-      transform: translateX(calc(var(--slider-index) * -100%));
+      transform: translateX(calc(var(--slider-index) * var(--moving-factor)));
     }
     .handle {
       border: none;
       outline: none;
       flex-grow: 0;
-      width: 2.5%;
+      width: 4%;
       z-index: 80;
       padding: 0 0.5rem;
       display: flex;
@@ -176,6 +192,24 @@ const Container = styled.div`
           opacity: 1;
         }
       }
+    }
+  }
+  @media (max-width: 1024px) {
+    --moving-factor: -33.333333%;
+    .handle {
+      width: 4% !important;
+    }
+  }
+  @media (max-width: 768px) {
+    --moving-factor: -50%;
+    .handle {
+      width: 7% !important;
+    }
+  }
+  @media (max-width: 425px) {
+    --moving-factor: -100%;
+    .handle {
+      width: 10% !important;
     }
   }
 `;
