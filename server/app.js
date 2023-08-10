@@ -20,4 +20,4 @@ mongoose
 
 app.use('/api/user', userRouter);
 
-app.listen(process.env.PORT, console.log('Server is started!'));
+app.listen(9000, console.log('Server is started!'));
