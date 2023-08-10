@@ -29,29 +29,13 @@ export default React.memo(function CardSlider({ data, title }) {
     if (listRef.current) {
       setSliderWidthVal(listRef.current.clientWidth);
     }
-    // if (listRef.current.children[0]) {
-    //   setSliderChildWidthVal(listRef.current.children[0].clientWidth);
-    // }
   }, []);
-
-  // ! Fixing the horizontal scrolling logic!
-  // useEffect(() => {
-  //   const itemPerScreen = Math.floor(sliderWidthVal / sliderChildWidthVal);
-  //   const visibleItems = [];
-  //   for (let i = itemPerScreen * sliderValue; i < itemPerScreen; i++) {
-  //     visibleItems.push(i);
-  //   }
-  //   console.log(visibleItems);
-  //   setVisibleItemsIndexes(visibleItems);
-  // }, [sliderValue]);
 
   const handleDirection = (direction) => {
     const itemCount = data.length;
     const childWidth = listRef.current.children[0].clientWidth;
     const itemPerScreen = Math.floor(sliderWidthVal / childWidth);
     const allowedShift = itemCount - itemPerScreen;
-
-    console.log(itemCount, childWidth, itemCount, allowedShift, sliderValue);
 
     if (direction === 'left' && sliderValue > 0) {
       listRef.current.style.setProperty('--slider-index', sliderValue - 1);
@@ -86,16 +70,7 @@ export default React.memo(function CardSlider({ data, title }) {
         </button>
         <div className="flex slider" ref={listRef}>
           {data.map((movie, index) => {
-            return (
-              <Card
-                // extraClass={
-                //   visibleItemsIndexes.includes(index) && `on-screen-${index}`
-                // }
-                movieData={movie}
-                index={index}
-                key={movie.id}
-              />
-            );
+            return <Card movieData={movie} index={index} key={movie.id} />;
           })}
         </div>
         <button
@@ -144,7 +119,7 @@ const Container = styled.div`
     .slider {
       --slider-index: -25%;
       width: 95%;
-      transition: 0.6s ease-in-out;
+      transition: 0.35s ease-in-out;
       transform: translateX(calc(var(--slider-index) * var(--moving-factor)));
     }
     .handle {
@@ -158,7 +133,7 @@ const Container = styled.div`
       justify-content: center;
       align-content: center;
       align-items: center;
-      transition: 0.2s ease-in-out;
+      transition: 0.1s ease-in-out;
       background: hsla(0, 0%, 8%, 0.5);
       border-radius: 0.2rem;
 
@@ -166,7 +141,7 @@ const Container = styled.div`
       svg {
         visibility: hidden;
         opacity: 0;
-        transition: visibility 0.3s ease-in-out, opacity 0.3s ease-in-out,
+        transition: visibility 0.2s ease-in-out, opacity 0.3s ease-in-out,
           transform 0.45s ease-in-out;
         font-size: 2rem;
         polyline {

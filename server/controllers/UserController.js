@@ -32,11 +32,12 @@ module.exports.addToLikedMovies = (req, res, next) => {
 };
 
 module.exports.removeFromLikedMovies = (req, res, next) => {
-  const { email, data } = req.body;
+  const { email, movieId } = req.body;
+  // console.log(movieId);
   User.findOne({ email })
     .then((user) => {
       if (user) {
-        filteredMovies = user.likedMovies.filter(({ id }) => id !== data.id);
+        filteredMovies = user.likedMovies.filter(({ id }) => id !== movieId);
         return User.findByIdAndUpdate(
           user._id,
           {
@@ -45,6 +46,12 @@ module.exports.removeFromLikedMovies = (req, res, next) => {
           { new: true }
         );
       }
+    })
+    .then((user) => {
+      return res.json({
+        msg: 'Movie was deleted',
+        likedMovies: user.likedMovies,
+      });
     })
     .catch((err) => console.log(err));
 };

@@ -10,6 +10,7 @@ import Navbar from '../components/Navbar';
 import Slider from '../components/Slider';
 import NotAvailable from '../components/NotAvailable';
 import SelectGenre from '../components/SelectGenre';
+import LoaderSlider from '../components/LoaderSlider';
 
 export default function TVShows() {
   const navigate = useNavigate();
@@ -52,7 +53,15 @@ export default function TVShows() {
         isScroll={isScroll}
       />
       <div className="data">
-        {movies.length ? <Slider movies={movies} /> : <NotAvailable />}
+        {genres.length <= 0 ? (
+          <div className="loader-container" style={{ paddingTop: '1rem' }}>
+            <LoaderSlider />
+          </div>
+        ) : movies.length ? (
+          <Slider movies={movies} />
+        ) : (
+          <NotAvailable />
+        )}
       </div>
     </Container>
   );

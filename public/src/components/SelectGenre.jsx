@@ -41,37 +41,41 @@ export default function SelectGenre({ genres, type, title, isScroll }) {
         <div className="title">
           <h1>{title}</h1>
         </div>
-        <div
-          className="select-genres__container"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}>
+        {genres.length > 0 && (
           <div
-            className={`selected j-between a-center ${isClicked && 'clicked'}`}
-            onClick={() => setIsClicked(!isClicked)}>
-            {selected}
-            <AiFillCaretDown />
+            className="select-genres__container"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}>
+            <div
+              className={`selected j-between a-center ${
+                isClicked && 'clicked'
+              }`}
+              onClick={() => setIsClicked(!isClicked)}>
+              {selected}
+              <AiFillCaretDown />
+            </div>
+            <ul
+              className="options-container"
+              style={{ display: isClicked ? 'block' : 'none' }}>
+              <li
+                className="options"
+                onClick={handleOptionChange}
+                ref={optionContainerRef}>
+                {genres.map((genre) => {
+                  return (
+                    <div
+                      className="option"
+                      name={genre.name}
+                      value={genre.id}
+                      key={genre.id}>
+                      {genre.name}
+                    </div>
+                  );
+                })}
+              </li>
+            </ul>
           </div>
-          <ul
-            className="options-container"
-            style={{ display: isClicked ? 'block' : 'none' }}>
-            <li
-              className="options"
-              onClick={handleOptionChange}
-              ref={optionContainerRef}>
-              {genres.map((genre) => {
-                return (
-                  <div
-                    className="option"
-                    name={genre.name}
-                    value={genre.id}
-                    key={genre.id}>
-                    {genre.name}
-                  </div>
-                );
-              })}
-            </li>
-          </ul>
-        </div>
+        )}
       </div>
     </Container>
   );

@@ -78,7 +78,9 @@ export default React.memo(function Card({
           </div>
           <div className="info-container flex column">
             <h3 className="name" onClick={() => navigate('/player')}>
-              {movieData.name}
+              {movieData.name.length > 25
+                ? `${movieData.name.slice(0, 25)}...`
+                : movieData.name}
             </h3>
             <div className="icons flex j-between">
               <div className="controls flex">
@@ -135,6 +137,7 @@ const Container = styled.div`
     height: 100%;
     z-index: 10;
     border-radius: 0.3rem;
+    object-fit: contain;
   }
   .hover {
     z-index: 90;
@@ -150,8 +153,7 @@ const Container = styled.div`
     transition: 0.7s ease-in-out;
     .image-video-container {
       position: relative;
-      height: calc(100% - 9rem);
-
+      height: calc(100% - 7rem);
       img,
       video {
         position: absolute;
@@ -173,12 +175,17 @@ const Container = styled.div`
       }
     }
     .info-container {
+      --info-font-size: 1.8rem;
       width: 100%;
       position: absolute;
+      z-index: 5;
+      display: flex;
+      justify-content: end;
       bottom: 0;
       transition: 0.3s ease-in-out;
-      padding: 1rem;
-      height: 9rem;
+      padding: 0.5rem 1rem;
+      height: 7rem;
+      height: 45%;
       gap: 0.5rem;
       background-color: #141414;
       .icons {
@@ -187,7 +194,7 @@ const Container = styled.div`
           gap: 1rem;
         }
         svg {
-          font-size: 1.8rem;
+          font-size: var(--info-font-size);
           cursor: pointer;
           transition: 0.3s ease-in-out;
           &:hover {
@@ -199,10 +206,8 @@ const Container = styled.div`
         ul {
           width: 100%;
           gap: 1rem;
-          /* border: 1px solid #fff; */
           li {
-            /* border: 1px solid #fff; */
-            font-size: 0.9rem;
+            font-size: calc(var(--info-font-size) / 2);
             list-style-type: none;
             display: flex;
             align-items: center;
@@ -236,9 +241,22 @@ const Container = styled.div`
   }
   @media (max-width: 1024px) {
     --items-per-screen: 3;
+    .image-video-container {
+      height: calc(100% - 6rem);
+    }
+    .info-container {
+      height: 6rem;
+    }
   }
   @media (max-width: 768px) {
     --items-per-screen: 2;
+    .image-video-container {
+      height: calc(100% - 5rem);
+    }
+    .info-container {
+      --info-font-size: 1.6rem;
+      height: 5rem;
+    }
   }
   @media (max-width: 425px) {
     --items-per-screen: 1;

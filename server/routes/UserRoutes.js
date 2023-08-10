@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post('/add', userRoutes.addToLikedMovies);
 
-router.post('/remove', userRoutes.removeFromLikedMovies);
+router.put('/likedMovies/remove', userRoutes.removeFromLikedMovies);
 
 router.get('/likedMovies/:email', userRoutes.getLikedMovies);
 

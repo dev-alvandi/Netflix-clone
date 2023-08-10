@@ -67,7 +67,7 @@ export default function Netflix() {
           </div>
         </div>
       </div>
-      <Slider movies={movies} />
+      <Slider movies={movies} isLoading={movies.length <= 0} />
     </Container>
   );
 }
