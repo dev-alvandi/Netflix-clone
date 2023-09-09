@@ -4,24 +4,17 @@ import { GrNext, GrPrevious } from 'react-icons/gr';
 
 import Card from './Card';
 import { useDispatch, useSelector } from 'react-redux';
-import LoadingMovies from './LoadingMovies';
 
 export default React.memo(function CardSlider({ data, title }) {
   const listRef = useRef();
-
-  const dispatch = useDispatch();
   const genresLoaded = useSelector((state) => state.netflix.moviesLoaded);
 
-  // const [visibleItemsIndexes, setVisibleItemsIndexes] = useState([]);
-  // const [sliderChildWidthVal, setSliderChildWidthVal] = useState(0);
   const [sliderWidthVal, setSliderWidthVal] = useState(0);
   const [sliderValue, setSliderValue] = useState(0);
-  const [isLoaded, setIsLoaded] = useState(false);
   const [hideArrow, setHideArrow] = useState('');
 
   useEffect(() => {
     if (genresLoaded) {
-      setIsLoaded(true);
     }
   }, [genresLoaded]);
 

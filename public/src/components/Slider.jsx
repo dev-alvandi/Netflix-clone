@@ -8,8 +8,6 @@ export default React.memo(function Slider({ movies, isLoading }) {
     return movies.slice(from, to);
   };
 
-  console.log(isLoading);
-
   return (
     <div>
       {isLoading && <LoaderSlider />}

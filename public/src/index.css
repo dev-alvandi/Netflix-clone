@@ -44,3 +44,7 @@ body::webkit-scrollbar {
 .j-between {
   justify-content: space-between;
 }
+
+.navbar {
+  position: relative;
+}

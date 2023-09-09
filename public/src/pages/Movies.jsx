@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { firebaseAuth } from '../utils/firebase.config';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -13,22 +12,13 @@ import SelectGenre from '../components/SelectGenre';
 import LoaderSlider from '../components/LoaderSlider';
 
 export default function Movies() {
-  // const navigate = useNavigate();
   const dispatch = useDispatch();
-  const navigate = useNavigate;
 
   const movies = useSelector((state) => state.netflix.movies);
   const genres = useSelector((state) => state.netflix.genres);
   const genresLoaded = useSelector((state) => state.netflix.genresLoaded);
   // const [email, setEmail] = useState(undefined);
   const [isScroll, setIsScroll] = useState(false);
-
-  onAuthStateChanged(firebaseAuth, (currUser) => {
-    if (!currUser) {
-      navigate('/login');
-    }
-    // return setEmail(currUser.email);
-  });
 
   useEffect(() => {
     dispatch(getGenres());
@@ -38,7 +28,7 @@ export default function Movies() {
     if (genresLoaded) {
       dispatch(fetchMovies({ type: 'movie' }));
     }
-  }, [genresLoaded]);
+  }, [genresLoaded, dispatch]);
 
   window.onscroll = () => {
     setIsScroll(window.pageYOffset === 0 ? false : true);
@@ -78,7 +68,6 @@ export default function Movies() {
 
 const Container = styled.div`
   .data {
-    margin-top: 10rem;
     .not-available {
       text-align: center;
       color: #fff;

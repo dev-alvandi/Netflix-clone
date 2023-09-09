@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { FaSearch } from 'react-icons/fa';
 import { AiFillCaretDown } from 'react-icons/ai';
@@ -13,6 +13,7 @@ import { searchMovies } from '../store';
 import SearchedMovies from './SearchedMovies';
 
 export default function Navbar({ isScroll }) {
+  const inputRef = useRef();
   const dispatch = useDispatch();
   const serchedMovies = useSelector((state) => state.netflix.searchedMovies);
 
@@ -53,7 +54,7 @@ export default function Navbar({ isScroll }) {
     if (e.key === 'Enter') {
       dispatch(searchMovies({ term: searchTerm }));
       setIsSearching(true);
-      document.body.style.overflow = 'hidden';
+      // document.body.style.overflow = 'hidden';
     }
   };
 
@@ -68,11 +69,11 @@ export default function Navbar({ isScroll }) {
     <Fragment>
       <NavContainer>
         <nav className={`flex ${isScroll ? 'scrolled' : ''}`}>
-          <div className="left flex a-center">
+          <div className="flex a-center left">
             <div
-              className="logo flex a-center j-center"
+              className="flex a-center j-center logo"
               onClick={() => navigate('/')}>
-              <img src={Logo} alt="" />
+              <img src={Logo} alt="Netflix" />
             </div>
             <div
               className="browse-menu flex j-center a-center"
@@ -97,21 +98,23 @@ export default function Navbar({ isScroll }) {
               })}
             </ul>
           </div>
-          <div className="right flex a-center">
-            <div className={`search ${showSearch && 'show-search'}`}>
+          <div className="flex a-center right">
+            <div className={`search ${showSearch ? 'show-search' : ''}`}>
               <button
+                className="search-icon"
                 onFocus={() => setShowSearch(true)}
-                onBlur={() => !inputHover && setShowSearch(false)}>
+                onBlur={() => !inputHover && setShowSearch(false)}
+                onClick={() => inputRef.current.focus()}>
                 <FaSearch />
               </button>
               <input
                 type="text"
                 placeholder="Search..."
+                ref={inputRef}
                 onMouseEnter={() => setInputHover(true)}
-                onMouseLeave={() => setInputHover(false)}
                 onBlur={() => {
                   setShowSearch(false);
-                  setInputHover(false);
+                  // setInputHover(false);
                 }}
                 onChange={(e) =>
                   setSearchTerm(
@@ -141,16 +144,17 @@ const NavContainer = styled.div`
   }
   position: fixed;
   top: 0;
+  left: 0;
   font-size: 1rem;
   z-index: 1002;
   width: 100%;
   height: 5rem;
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   nav {
     padding: 0 2rem;
-    position: sticky;
     width: 100%;
     height: 100%;
     transition: 0.3s ease-in-out;
@@ -185,6 +189,7 @@ const NavContainer = styled.div`
             text-decoration: none;
             color: #fff;
             transition: color 0.4s ease-in-out;
+            white-space: nowrap;
           }
           &:hover {
             a {
@@ -205,7 +210,7 @@ const NavContainer = styled.div`
         display: flex;
         align-items: center;
         justify-content: center;
-        button {
+        .search-icon {
           outline: none;
           border: none;
           cursor: pointer;
@@ -246,11 +251,14 @@ const NavContainer = styled.div`
   }
 
   @media (max-width: 900px) {
+    background-color: #14141466;
+    position: sticky;
     nav {
       .left {
         position: relative;
         .browse-menu {
           display: flex;
+          cursor: pointer;
         }
         .links {
           display: ${({ active }) => active};
@@ -261,9 +269,62 @@ const NavContainer = styled.div`
           flex-direction: column;
           position: relative;
           top: 150%;
-          left: -25%;
+          left: 0;
+          transform: translateX(-50%);
           li {
           }
+        }
+      }
+      .right {
+        justify-content: flex-end;
+        .show-search {
+          width: 50%;
+          border: 1px solid #fff;
+          background-color: rgba(0, 0, 0, 0.6);
+
+          input {
+            width: 100%;
+            opacity: 1;
+            visibility: visible;
+          }
+        }
+        button {
+          /* padding-left: 0.1rem; */
+          padding: 0.5rem !important;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 600px) {
+    nav {
+      font-size: 0.8rem;
+      padding: 0.5rem;
+      .left {
+        .logo {
+          display: none;
+        }
+        .browse-menu {
+          padding: 0;
+        }
+      }
+      .right {
+        gap: 0.2rem;
+        .show-search {
+          border: 1px solid #fff;
+          background-color: rgba(0, 0, 0, 0.6);
+          button {
+            padding-left: 0.5rem;
+          }
+          input {
+            font-size: 0.8rem;
+            width: 100%;
+            opacity: 1;
+            visibility: visible;
+          }
+        }
+        button {
+          font-size: 0.8rem;
         }
       }
     }

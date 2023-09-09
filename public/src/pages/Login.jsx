@@ -14,16 +14,29 @@ export default function Login() {
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
 
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
-    try {
-      const { email, password } = formValues;
-      await signInWithEmailAndPassword(firebaseAuth, email, password);
-    } catch (error) {
-      console.log(error);
-    }
+  const handleLogin = () => {
+    const { email, password } = formValues;
+    signInWithEmailAndPassword(firebaseAuth, email, password).catch((err) => {
+      switch (err.code) {
+        case 'auth/invalid-email':
+          setError('The entered email is invalid.');
+          break;
+        case 'auth/weak-password':
+          setError('A weak password is entered.');
+          break;
+        case 'auth/user-not-found':
+          setError('Email and/or password is entered incorrectly.');
+          break;
+        case 'auth/wrong-password':
+          setError('Wrong password is entered.');
+          break;
+        default:
+      }
+    });
   };
 
   onAuthStateChanged(firebaseAuth, (currUser) => {
@@ -42,6 +55,7 @@ export default function Login() {
             <div className="title">
               <h3>Log in</h3>
             </div>
+            {error.length > 0 && <div className="error">{error}</div>}
             <div className="container flex column">
               <input
                 type="email"
@@ -113,6 +127,13 @@ const Container = styled.div`
         background-color: #000000b0;
         gap: 2rem;
         color: white;
+        .error {
+          width: 20rem;
+          padding: 10px 20px;
+          border-radius: 0.25rem;
+          background: #e87c03;
+          color: #fff;
+        }
         .container {
           gap: 2rem;
           input {

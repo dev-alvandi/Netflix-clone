@@ -18,8 +18,13 @@ const SearchContainer = styled.div`
   height: 100%;
   background-color: #141414;
   position: fixed;
+  overflow-y: scroll;
   left: 0;
+  top: 0;
   z-index: 1001;
+  &::-webkit-scrollbar {
+    display: none;
+  }
   .body {
     width: 95%;
     margin: auto;

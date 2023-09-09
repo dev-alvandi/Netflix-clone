@@ -31,7 +31,7 @@ export default function MyList() {
     if (email) {
       dispatch(getUserLikedMovies(email));
     }
-  }, [email, likedMoviesCount]);
+  }, [email, likedMoviesCount, dispatch]);
 
   window.onscroll = () => {
     setIsScroll(window.pageYOffset === 0 ? false : true);

@@ -14,7 +14,7 @@ export default function Header({ login }) {
         <img src={Logo} alt="" />
       </div>
       <Button onClick={() => navigate(login ? '/login' : '/signup')}>
-        {login ? 'Login' : 'Signin'}
+        {login ? 'Login' : 'Sign in'}
       </Button>
     </Container>
   );

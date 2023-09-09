@@ -17,7 +17,7 @@ export default function SelectGenre({ genres, type, title, isScroll }) {
     if (genresLoaded) {
       setSelected(genres[0].name);
     }
-  }, [genresLoaded]);
+  }, [genres, genresLoaded]);
 
   const handleOptionChange = (e) => {
     const target = e.target.getAttribute('name');
@@ -82,11 +82,10 @@ export default function SelectGenre({ genres, type, title, isScroll }) {
 }
 
 const Container = styled.div`
-  position: fixed;
+  /* position: fixed; */
   background-color: transparent;
   width: 100%;
-  z-index: 100;
-  top: 5rem;
+  margin-top: 5rem;
   color: #fff;
   font-size: 1rem;
   .scrolled {
@@ -137,6 +136,15 @@ const Container = styled.div`
             align-content: center;
           }
         }
+      }
+    }
+  }
+  @media (max-width: 768px) {
+    .mainContainer {
+      flex-direction: column;
+      .options-container {
+        left: 50%;
+        transform: translateX(-50%);
       }
     }
   }

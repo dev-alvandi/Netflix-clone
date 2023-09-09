@@ -16,6 +16,7 @@ export default function Signup() {
     email: '',
     password: '',
   });
+  const [error, setError] = useState('');
 
   const navigate = useNavigate();
 
@@ -23,8 +24,22 @@ export default function Signup() {
     try {
       const { email, password } = formValues;
       await createUserWithEmailAndPassword(firebaseAuth, email, password);
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      switch (err.code) {
+        case 'auth/invalid-email':
+          setError('The entered email is invalid.');
+          break;
+        case 'auth/email-already-in-use':
+          setError('Email is already registered.');
+          break;
+        case 'auth/missing-password':
+          setError('Password is missing.');
+          break;
+        case 'auth/weak-password':
+          setError('A weak password is entered.');
+          break;
+        default:
+      }
     }
   };
 
@@ -85,6 +100,7 @@ export default function Signup() {
             )}
           </div>
           {showPassword && <Button onClick={handleSignup}>Sign Up</Button>}
+          {error.length > 0 && <div className="error">{error}</div>}
         </div>
       </div>
     </Container>
@@ -130,6 +146,15 @@ const Container = styled.div`
             outline: none;
           }
         }
+      }
+      .error {
+        width: 30%;
+        margin-top: 1rem;
+        text-align: center;
+        padding: 10px 20px;
+        border-radius: 0.25rem;
+        background: #e87c03;
+        color: #fff;
       }
     }
   }

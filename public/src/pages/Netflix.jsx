@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
 import { FaPlay } from 'react-icons/fa';
 import { AiOutlineInfoCircle } from 'react-icons/ai';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchMovies, getGenres } from '../store';
 
 import Navbar from '../components/Navbar';
 import BackgroundImage from '../assets/home.jpg';
 import MovieLogo from '../assets/MovieLogo.png';
 import Button from '../components/Button';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { fetchMovies, getGenres } from '../store';
 import Slider from '../components/Slider';
 
 export default function Netflix() {
@@ -28,7 +28,7 @@ export default function Netflix() {
     if (genresLoaded) {
       dispatch(fetchMovies({ type: 'all' }));
     }
-  }, [genresLoaded]);
+  }, [genresLoaded, dispatch]);
 
   window.onscroll = () => {
     setIsScroll(window.pageYOffset === 0 ? false : true);

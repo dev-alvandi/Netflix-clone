@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { firebaseAuth } from '../utils/firebase.config';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -13,7 +12,6 @@ import SelectGenre from '../components/SelectGenre';
 import LoaderSlider from '../components/LoaderSlider';
 
 export default function TVShows() {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [isScroll, setIsScroll] = useState(false);
@@ -23,7 +21,7 @@ export default function TVShows() {
 
   useEffect(() => {
     dispatch(getGenres());
-  });
+  }, []);
 
   useEffect(() => {
     if (genresLoaded) {
@@ -69,7 +67,6 @@ export default function TVShows() {
 
 const Container = styled.div`
   .data {
-    margin-top: 10rem;
     .not-available {
       text-align: center;
       color: #fff;
