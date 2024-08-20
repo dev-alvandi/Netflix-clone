@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import styled from "styled-components";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
-} from 'firebase/auth';
-import BackgroundImage from '../components/BackgroundImage';
-import Header from '../components/Header';
-import Button from '../components/Button';
-import { firebaseAuth } from '../utils/firebase.config';
-import { useNavigate } from 'react-router-dom';
+} from "firebase/auth";
+import BackgroundImage from "../components/BackgroundImage";
+import Header from "../components/Header";
+import Button from "../components/Button";
+import { firebaseAuth } from "../utils/firebase.config";
+import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [formValues, setFormValues] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
@@ -26,17 +26,17 @@ export default function Signup() {
       await createUserWithEmailAndPassword(firebaseAuth, email, password);
     } catch (err) {
       switch (err.code) {
-        case 'auth/invalid-email':
-          setError('The entered email is invalid.');
+        case "auth/invalid-email":
+          setError("The entered email is invalid.");
           break;
-        case 'auth/email-already-in-use':
-          setError('Email is already registered.');
+        case "auth/email-already-in-use":
+          setError("Email is already registered.");
           break;
-        case 'auth/missing-password':
-          setError('Password is missing.');
+        case "auth/missing-password":
+          setError("Password is missing.");
           break;
-        case 'auth/weak-password':
-          setError('A weak password is entered.');
+        case "auth/weak-password":
+          setError("A weak password is entered.");
           break;
         default:
       }
@@ -45,7 +45,7 @@ export default function Signup() {
 
   onAuthStateChanged(firebaseAuth, (currUser) => {
     if (currUser) {
-      navigate('/');
+      navigate("/");
     }
   });
 
@@ -92,9 +92,10 @@ export default function Signup() {
             )}
             {!showPassword && (
               <Button
-                style={{ borderRadius: '0' }}
+                style={{ borderRadius: "0" }}
                 type="submit"
-                onClick={() => setShowPassword(true)}>
+                onClick={() => setShowPassword(true)}
+              >
                 Get Started
               </Button>
             )}
@@ -114,15 +115,17 @@ const Container = styled.div`
   .content {
     width: 100%;
     height: 100%;
-    overflow: hidden;
-    position: absolute;
-    top: 0;
-    left: 0;
     background-color: rgba(0, 0, 0, 0.5);
-    display: grid;
-    grid-template-rows: 15vh 85vh;
+    /* overflow: hidden; */
+    display: flex;
+    flex-direction: column;
+    gap: 8rem;
+
     .body {
       gap: 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       .text {
         gap: 1rem;
         text-align: center;
@@ -134,7 +137,7 @@ const Container = styled.div`
       .form {
         display: grid;
         grid-template-columns: ${(showPassword) =>
-          showPassword ? '1fr 1fr' : '2fr 1fr'};
+          showPassword ? "1fr 1fr" : "2fr 1fr"};
         width: 60%;
         input {
           color: #000;
@@ -161,6 +164,21 @@ const Container = styled.div`
   @media only screen and (max-width: 48rem) {
     .content {
       background-color: transparent;
+      .body {
+        .text {
+          font-size: 1rem;
+          h1 {
+          }
+          h4 {
+          }
+          h6 {
+          }
+        }
+        .form {
+          display: flex;
+          flex-direction: column;
+        }
+      }
     }
   }
 `;
